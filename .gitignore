@@ -127,3 +127,97 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+File = "statewide_cases.csv"
+
+highest = 0
+lowest = 0
+highestDate = ""
+lowestDate = ""
+total = 0
+count = 0
+header = None
+
+
+
+
+
+
+
+
+
+with open(File, "r") as dataFile:
+
+  #loop for every line in file
+  for currentLine in dataFile:
+
+
+    if (header == None):
+        header = currentLine
+        continue
+    
+
+    #Strip newline character
+    currentLine = currentLine.rstrip()
+
+
+    #Split line
+    (county,totalcountconfirmed,totalcountdeaths,newcountconfirmed,newcountdeaths,date) = currentLine.split(',')
+
+
+    #Skip invalid license
+    if (totalcountconfirmed == ""):
+      continue
+
+
+    #Get data from Contra Costa
+    if (county == "Contra Costa"):
+        highest = int(max(totalcountconfirmed))
+        lowest = int(min(totalcountconfirmed))
+
+
+        #Running total
+        total += int(totalcountconfirmed)
+
+        #count number of line
+        count += 1
+
+
+        #determine if current number is the highest so far
+        if (int(totalcountconfirmed)> highest):
+            #highest = int(totalcountconfirmed)
+            highestDate = date
+
+
+        #Determine if current number is lowest so far
+        if (int(totalcountconfirmed)<highest):
+            #lowest = int(totalcountconfirmed)
+            lowestDate = date
+
+
+    #Get data from all counties
+    #Running total
+    #total += int(totalcountconfirmed)
+    #count number of line
+    count += 1
+
+
+    #determine if current number is the highest so far
+    if (int(totalcountconfirmed)> highest):
+        allTimeCases = int(totalcountconfirmed)
+        allTimeDate = date
+        allTimeCounty = county
+
+
+    #Determine if current number is lowest so far
+    if (int(totalcountconfirmed)<highest):
+        lowest = int(totalcountconfirmed)
+        lowestDate = date
+
+# Calculate average
+ave = total/count
+
+print("Highest Testing Day for Contra Costa County: ", highestDate, "tests", highest)
+print("Lowest Testing Day for Contra Costa County: ", lowestDate, "tests", lowest)
+print("Average new cases per day for Contra Costa County: %.2f" % ave)
+print("The highest day for new cases was in: ", allTimeCounty, "at ",allTimeCases, " on ", allTimeDate)
